@@ -1,6 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
+import { persistentStorage } from '../lib/persistentStorage';
 import { getPalette, ThemeMode } from '../theme/palette';
 
 const THEME_MODE_KEY = 'rentals.theme-mode';
@@ -28,8 +28,8 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     async function hydrate() {
       try {
         const [storedTheme, storedShowSaved] = await Promise.all([
-          AsyncStorage.getItem(THEME_MODE_KEY),
-          AsyncStorage.getItem(SHOW_SAVED_KEY),
+          persistentStorage.getItem(THEME_MODE_KEY),
+          persistentStorage.getItem(SHOW_SAVED_KEY),
         ]);
 
         if (!active) {
@@ -59,12 +59,12 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   async function setThemeMode(mode: ThemeMode) {
     setThemeModeState(mode);
-    await AsyncStorage.setItem(THEME_MODE_KEY, mode);
+    await persistentStorage.setItem(THEME_MODE_KEY, mode);
   }
 
   async function setShowSavedListingsInProfile(value: boolean) {
     setShowSavedListingsState(value);
-    await AsyncStorage.setItem(SHOW_SAVED_KEY, String(value));
+    await persistentStorage.setItem(SHOW_SAVED_KEY, String(value));
   }
 
   const value = useMemo(
